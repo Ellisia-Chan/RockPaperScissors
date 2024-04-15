@@ -39,6 +39,7 @@ namespace RockPaperScissors
 
                 if (option == "5")
                 {
+                    Console.WriteLine();
                     Console.Write("Exiting Program");
                     Thread.Sleep(500);
                     Console.Write(".");
@@ -56,20 +57,49 @@ namespace RockPaperScissors
 
         static void Game(int Score)
         {
+            int scoreDecision = 0;
             int playerScore = 0;
             int enemyScore = 0;
 
-            Console.WriteLine($"Score to Win: {Score}");
+            Console.WriteLine($"  Score to Win: {Score}");
             while (true)
             {
                 Console.WriteLine($"  Player Score - {playerScore}  Enemy Score - {enemyScore}");
-                Console.WriteLine("Select Actions: r - Rock  p - Paper  s - Scissors");
+                Console.WriteLine("  Select Actions: r - Rock  p - Paper  s - Scissors");
 
-                Console.WriteLine(" > ");
+                Console.Write(" > ");
                 string playerAction = Console.ReadLine();
                 Console.WriteLine();
 
-                MechanicsCondition(playerAction);
+                if (playerAction.ToLower() != "r" && playerAction.ToLower() != "p" && playerAction.ToLower() != "s")
+                {
+                    Console.WriteLine("  Invalid Action! Please Try Again.");
+                    continue;
+                }
+
+                scoreDecision = MechanicsCondition(playerAction, EnemyRoll());
+
+                if (scoreDecision == 1)
+                {
+                    playerScore += 1;
+                }
+
+                if (scoreDecision == -1)
+                {
+                    enemyScore += 1;
+                }
+
+                if (playerScore == Score)
+                {
+                    Console.WriteLine("  You Win the Game!");
+                    break;
+                }
+
+                if (enemyScore == Score)
+                {
+                    Console.WriteLine("  You Lose the Game!");
+                    break;
+                }
             }
         }
 
@@ -90,29 +120,43 @@ namespace RockPaperScissors
             }
         }
 
-        static int MechanicsCondition(string playerAction)
+        static int MechanicsCondition(string playerAction, int enemyActionNum)
         {
-            int enemyActionNum = EnemyRoll();
             string enemyAction = "";
+            string enemyActionString = "";
 
             switch (enemyActionNum)
             {
                 case 0:
                     {
                         enemyAction = "r";
+                        enemyActionString = "Rock!";
                         break;
                     }
                 case 1:
                     {
                         enemyAction = "p";
+                        enemyActionString = "Paper!";
                         break;
                     }
                 case 2:
                     {
                         enemyAction = "s";
+                        enemyActionString = "Scissors!";
                         break;
                     }
             }
+
+            Console.Write("  Enemy Choose");
+            Thread.Sleep(500);
+            Console.Write(".");
+            Thread.Sleep(500);
+            Console.Write(".");
+            Thread.Sleep(500);
+            Console.Write(".");
+
+            Console.Write($" {enemyActionString}");
+            Console.WriteLine();
 
             if (playerAction.ToLower() == "r" || playerAction.ToLower() == "p" || playerAction.ToLower() == "s")
             {
@@ -120,18 +164,81 @@ namespace RockPaperScissors
                 {
                     case "r":
                         {
-                            if (playerAction == "r" && enemyAction == "r")
+                            if (enemyAction == "r")
                             {
-                                Console.WriteLine("Tie!");
+                                Console.WriteLine("  Tie!");
+                                Console.WriteLine();
+                                return 0;
                             }
-                            else if (playerAction == "r" && enemyAction == "p")
-                            {
-                                Console.WriteLine("You Lose!");
 
+                            if (enemyAction == "s")
+                            {
+                                Console.WriteLine("  You Win!");
+                                Console.WriteLine();
+                                return 1;
                             }
+
+                            if (enemyAction == "p")
+                            {
+                                Console.WriteLine("  You Lose!");
+                                Console.WriteLine();
+                                return -1;
+                            }
+                            break;
+                        }
+
+                    case "p":
+                        {
+                            if (enemyAction == "p")
+                            {
+                                Console.WriteLine("  Tie!");
+                                Console.WriteLine();
+                                return 0;
+                            }
+
+                            if (enemyAction == "r")
+                            {
+                                Console.WriteLine("  You Win!");
+                                Console.WriteLine();
+                                return 1;
+                            }
+
+                            if (enemyAction == "s")
+                            {
+                                Console.WriteLine("  You Lose!");
+                                Console.WriteLine();
+                                return -1;
+                            }
+                            break;
+                        }
+
+                    case "s":
+                        {
+                            if (enemyAction == "s")
+                            {
+                                Console.WriteLine("  Tie!");
+                                Console.WriteLine();
+                                return 0;
+                            }
+
+                            if (enemyAction == "p")
+                            {
+                                Console.WriteLine("  You Win!");
+                                Console.WriteLine();
+                                return 1;
+                            }
+
+                            if (enemyAction == "r")
+                            {
+                                Console.WriteLine("  You Lose!");
+                                Console.WriteLine();
+                                return -1;
+                            }
+                            break;
                         }
                 }
             }
+            return 0;
         }
 
         static int EnemyRoll()
